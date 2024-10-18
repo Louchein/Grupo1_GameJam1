@@ -44,4 +44,22 @@ public class PlayerController : MonoBehaviour
         // Mover el personaje
         controller.Move(move * Time.deltaTime);
     }
+
+    //Dectector de colisionadores de la tierra.
+    private void OnTriggerEnter(Collider other) {
+        if(other.gameObject.CompareTag("Dirt"))
+        {
+            Transform childDirt = other.transform.Find("PileOfDirt");
+            if (childDirt != null) 
+            {
+                Destroy(childDirt.gameObject);
+                other.GetComponent<Collider>().enabled = false;
+            }
+            Transform childTool = other.transform.GetChild(1);
+            if (childTool != null) 
+            {
+                childTool.gameObject.SetActive(true); // Activa el familiar
+            }
+        }
+    }
 }

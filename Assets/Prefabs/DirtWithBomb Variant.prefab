@@ -159,6 +159,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DirtWithBomb Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 6134675453711539235, guid: 48db330099b39324fa9129c731d098bc, type: 3}
+      propertyPath: m_TagString
+      value: Dirt
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 5065199800367631593, guid: 48db330099b39324fa9129c731d098bc, type: 3}
