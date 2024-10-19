@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,24 +18,21 @@ public class PlayerController : MonoBehaviour
     bool canInteract = false;
     private Collider currentCollider;
 
-    // Variables para acceder al TMPro
-    TextMeshProUGUI axeText;
-    TextMeshProUGUI hammerText;
-    TextMeshProUGUI hoeText;
-    TextMeshProUGUI pickaxeText;
-
+    // Variables para acceder a las imagenes
+    public GameObject inactiveAxe;
+    public GameObject activeAxe;
+    public GameObject inactiveHammer;
+    public GameObject activeHammer;
+    public GameObject inactiveHoe;
+    public GameObject activeHoe;
+    public GameObject inactivePickaxe;
+    public GameObject activePickaxe;
     public bool gameOver;
 
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
-
-        axeText = GameObject.Find("AxeText").GetComponent<TextMeshProUGUI>();
-        hammerText = GameObject.Find("HammerText").GetComponent<TextMeshProUGUI>();
-        hoeText = GameObject.Find("HoeText").GetComponent<TextMeshProUGUI>();
-        pickaxeText = GameObject.Find("PickaxeText").GetComponent<TextMeshProUGUI>();
-
     }
 
     // Update is called once per frame
@@ -106,29 +104,31 @@ public class PlayerController : MonoBehaviour
         if(other.gameObject.CompareTag("Axe"))
         {
             familyCount++;
-            axeText.text = "Axe: Found";
-            axeText.color = Color.green;
+            inactiveAxe.SetActive(false);
+            activeAxe.SetActive(true);
         }
 
         if(other.gameObject.CompareTag("Hammer"))
         {
             familyCount++;
-            hammerText.text = "Hammer: Found";
-            hammerText.color = Color.green;
+            inactiveHammer.SetActive(false);
+            activeHammer.SetActive(true);
+
         }
 
         if(other.gameObject.CompareTag("Hoe"))
         {
             familyCount++;
-            hoeText.text = "Hoe: Found";
-            hoeText.color = Color.green;
+            inactiveHoe.SetActive(false);
+            activeHoe.SetActive(true);
         }
 
         if(other.gameObject.CompareTag("Pickaxe"))
         {
             familyCount++;
-            pickaxeText.text = "Pickaxe: Found";
-            pickaxeText.color = Color.green;
+            inactivePickaxe.SetActive(false);
+            activePickaxe.SetActive(true);
+
         }
     }
 
