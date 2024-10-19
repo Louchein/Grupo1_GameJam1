@@ -1,27 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    public ParticleSystem moveParticle; //  Particulas cuando el player se mueve
-    public ParticleSystem explosionParticle;
-    
     CharacterController controller;
 
     // Coordenadas de movimiento
     Vector3 movement;
     float movZ, movX;
     public float speed;
+    public int familyCount = 0;
+
+    // Variables para deteccion de colisiones.
+    bool canInteract = false;
+    private Collider currentCollider;
+
+    // Variables para acceder al TMPro
+    TextMeshProUGUI axeText;
+    TextMeshProUGUI hammerText;
+    TextMeshProUGUI hoeText;
+    TextMeshProUGUI pickaxeText;
+
+    // Audio
+    public AudioClip gameMusic;
+    public AudioClip notFoundAudio, foundAudio, bombAudio;
+
+    public bool gameOver;
 
 
     void Start()
     {
+        // Reproducir musica de fondo
+        AudioManager.Instance.PlayMusic(gameMusic);
+
         controller = GetComponent<CharacterController>();
 
-        // Asegúrate de que el sistema de partículas no siga al player
-        var mainModule = moveParticle.main;
-        mainModule.simulationSpace = ParticleSystemSimulationSpace.World; // Partículas en el espacio del mundo
+        axeText = GameObject.Find("AxeText").GetComponent<TextMeshProUGUI>();
+        hammerText = GameObject.Find("HammerText").GetComponent<TextMeshProUGUI>();
+        hoeText = GameObject.Find("HoeText").GetComponent<TextMeshProUGUI>();
+        pickaxeText = GameObject.Find("PickaxeText").GetComponent<TextMeshProUGUI>();
+
     }
 
     // Update is called once per frame
@@ -29,6 +49,7 @@ public class PlayerController : MonoBehaviour
     {
         InputManager();
         MovePlayer();
+        Dig();
     }
 
     void InputManager()
@@ -50,46 +71,90 @@ public class PlayerController : MonoBehaviour
 
         // Mover el personaje
         controller.Move(move * Time.deltaTime);
+    }
 
-        // Si el player está en movimiento, se activan las partículas
-        if (movX != 0 || movZ != 0)
+    void Dig()
+    {
+        if (canInteract && Input.GetKeyDown(KeyCode.Space))
         {
-            if (!moveParticle.isPlaying) // Verifica si las partículas ya no están reproduciéndose
+            GameObject pileOfDirt = currentCollider.gameObject;
+            if (pileOfDirt.CompareTag("Dirt") && pileOfDirt.transform.childCount == 2)
             {
-                moveParticle.Play(); // Reproduce las partículas
-            }
-        }
-        else
-        {
-            if (moveParticle.isPlaying) // Verifica si las partículas están reproduciéndose
-            {
-                moveParticle.Stop(); // Detiene las partículas
+                Transform childDirt = currentCollider.transform.Find("PileOfDirt");
+                if (childDirt != null)
+                {
+                    Destroy(childDirt.gameObject);
+                    currentCollider.GetComponent<Collider>().enabled = false;
+                }
+                if (currentCollider.transform.GetChild(1) != null)
+                {
+                    currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
+                }
             }
         }
     }
 
     //Dectector de colisionadores de la tierra.
-    private void OnTriggerEnter(Collider other) {
-        if(other.gameObject.CompareTag("Dirt"))
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Dirt"))
         {
-            Transform childDirt = other.transform.Find("PileOfDirt");
-            if (childDirt != null) 
-            {
-                Destroy(childDirt.gameObject);
-                other.GetComponent<Collider>().enabled = false;
-            }
-            Transform childTool = other.transform.GetChild(1);
-            if (childTool != null) 
-            {
-                childTool.gameObject.SetActive(true); // Activa el familiar
-            }
-        }
+            canInteract = true;
+            currentCollider = other;
+            AudioManager.Instance.PlaySFX(notFoundAudio);
+        }
 
-        if(other.gameObject.CompareTag("Bomb"))
-            {
-                Debug.Log("GameOver");
+        if (other.gameObject.CompareTag("Bomb"))
+        {
+            familyCount = 0;
+            gameOver = true;
+            AudioManager.Instance.PlaySFX(bombAudio);
 
-                explosionParticle.Play();
-            }
-    }
+        }
+
+        if (other.gameObject.CompareTag("Axe"))
+        {
+            familyCount++;
+            axeText.text = "Axe: Found";
+            axeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
+        }
+
+        if (other.gameObject.CompareTag("Hammer"))
+        {
+            familyCount++;
+            hammerText.text = "Hammer: Found";
+            hammerText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
+        }
+
+        if (other.gameObject.CompareTag("Hoe"))
+        {
+            familyCount++;
+            hoeText.text = "Hoe: Found";
+            hoeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
+        }
+
+        if (other.gameObject.CompareTag("Pickaxe"))
+        {
+            familyCount++;
+            pickaxeText.text = "Pickaxe: Found";
+            pickaxeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Dirt"))
+        {
+            canInteract = false;
+            currentCollider = null;
+        }
+    }
 }
