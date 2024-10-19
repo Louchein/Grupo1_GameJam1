@@ -23,11 +23,18 @@ public class PlayerController : MonoBehaviour
     TextMeshProUGUI hoeText;
     TextMeshProUGUI pickaxeText;
 
+    // Audio
+    public AudioClip gameMusic;
+    public AudioClip notFoundAudio, foundAudio, bombAudio;
+
     public bool gameOver;
 
 
     void Start()
     {
+        // Reproducir musica de fondo
+        AudioManager.Instance.PlayMusic(gameMusic);
+
         controller = GetComponent<CharacterController>();
 
         axeText = GameObject.Find("AxeText").GetComponent<TextMeshProUGUI>();
@@ -79,7 +86,7 @@ public class PlayerController : MonoBehaviour
                     Destroy(childDirt.gameObject);
                     currentCollider.GetComponent<Collider>().enabled = false;
                 }
-                if(currentCollider.transform.GetChild(1) != null)
+                if (currentCollider.transform.GetChild(1) != null)
                 {
                     currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
                 }
@@ -94,41 +101,51 @@ public class PlayerController : MonoBehaviour
         {
             canInteract = true;
             currentCollider = other;
+            AudioManager.Instance.PlaySFX(notFoundAudio);
         }
 
         if (other.gameObject.CompareTag("Bomb"))
         {
             familyCount = 0;
             gameOver = true;
+            AudioManager.Instance.PlaySFX(bombAudio);
 
         }
 
-        if(other.gameObject.CompareTag("Axe"))
+        if (other.gameObject.CompareTag("Axe"))
         {
             familyCount++;
             axeText.text = "Axe: Found";
             axeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
         }
 
-        if(other.gameObject.CompareTag("Hammer"))
+        if (other.gameObject.CompareTag("Hammer"))
         {
             familyCount++;
             hammerText.text = "Hammer: Found";
             hammerText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
         }
 
-        if(other.gameObject.CompareTag("Hoe"))
+        if (other.gameObject.CompareTag("Hoe"))
         {
             familyCount++;
             hoeText.text = "Hoe: Found";
             hoeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
         }
 
-        if(other.gameObject.CompareTag("Pickaxe"))
+        if (other.gameObject.CompareTag("Pickaxe"))
         {
             familyCount++;
             pickaxeText.text = "Pickaxe: Found";
             pickaxeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
         }
     }
 

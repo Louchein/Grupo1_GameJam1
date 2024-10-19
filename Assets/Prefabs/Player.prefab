@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 80
+  anguloCam: 0
   player: {fileID: 5174325247250372151}
 --- !u!81 &8887180002055352729
 AudioListener:
@@ -232,3 +233,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  familyCount: 0
+  gameMusic: {fileID: 8300000, guid: b4d2687b74a155740bc40e5a7d7b0892, type: 3}
+  gameOver: 0
