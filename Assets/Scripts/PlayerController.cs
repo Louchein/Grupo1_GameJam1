@@ -61,5 +61,10 @@ public class PlayerController : MonoBehaviour
                 childTool.gameObject.SetActive(true); // Activa el familiar
             }
         }
+
+        if(other.gameObject.CompareTag("Bomb"))
+            {
+                Debug.Log("GameOver");
+            }
     }
 }

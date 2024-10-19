@@ -85,8 +85,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a9231d0a95f77f4584a359bb8c1ed76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followDistance: 4
+  followDistance: 1.5
   followSpeed: 5
+  rotationSpeed: 5
 --- !u!4 &6929857135112932114 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4087615822210912696, guid: d20b62eaeeead634bb26c5c883d70c36, type: 3}

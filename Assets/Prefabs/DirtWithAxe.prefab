@@ -145,8 +145,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a9231d0a95f77f4584a359bb8c1ed76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followDistance: 5
+  followDistance: 2
   followSpeed: 5
+  rotationSpeed: 5
 --- !u!1001 &2159835869398689144
 PrefabInstance:
   m_ObjectHideFlags: 0

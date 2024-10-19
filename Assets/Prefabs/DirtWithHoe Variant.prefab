@@ -151,8 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a9231d0a95f77f4584a359bb8c1ed76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followDistance: 3
+  followDistance: 1
   followSpeed: 5
+  rotationSpeed: 5
 --- !u!4 &6634305377882534647 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 601511185009873499, guid: 41f41cfb8ee3f6d43b4d66bc2b0e6093, type: 3}
