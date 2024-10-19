@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     Vector3 movement;
     float movZ, movX;
     public float speed;
+    bool canInteract = false;
+    private Collider currentCollider;
 
 
     void Start()
@@ -22,6 +24,7 @@ public class PlayerController : MonoBehaviour
     {
         InputManager();
         MovePlayer();
+        Dig();
     }
 
     void InputManager()
@@ -45,26 +48,48 @@ public class PlayerController : MonoBehaviour
         controller.Move(move * Time.deltaTime);
     }
 
-    //Dectector de colisionadores de la tierra.
-    private void OnTriggerEnter(Collider other) {
-        if(other.gameObject.CompareTag("Dirt"))
+    void Dig()
+    {
+        if (canInteract && Input.GetKeyDown(KeyCode.Space))
         {
-            Transform childDirt = other.transform.Find("PileOfDirt");
-            if (childDirt != null) 
+            GameObject pileOfDirt = currentCollider.gameObject;
+            if (pileOfDirt.CompareTag("Dirt") && pileOfDirt.transform.childCount == 2)
             {
-                Destroy(childDirt.gameObject);
-                other.GetComponent<Collider>().enabled = false;
+                Transform childDirt = currentCollider.transform.Find("PileOfDirt");
+                if (childDirt != null)
+                {
+                    Destroy(childDirt.gameObject);
+                    currentCollider.GetComponent<Collider>().enabled = false;
+                }
+                if(currentCollider.transform.GetChild(1) != null)
+                {
+                    currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
+                }
             }
-            Transform childTool = other.transform.GetChild(1);
-            if (childTool != null) 
-            {
-                childTool.gameObject.SetActive(true); // Activa el familiar
-            }
-        }
+        }
+    }
 
-        if(other.gameObject.CompareTag("Bomb"))
-            {
-                Debug.Log("GameOver");
-            }
-    }
+    //Dectector de colisionadores de la tierra.
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Dirt"))
+        {
+            canInteract = true;
+            currentCollider = other;
+        }
+
+        if (other.gameObject.CompareTag("Bomb"))
+        {
+            Debug.Log("GameOver");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Dirt"))
+        {
+            canInteract = false;
+            currentCollider = null;
+        }
+    }
 }
