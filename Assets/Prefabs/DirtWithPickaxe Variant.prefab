@@ -128,7 +128,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3480242447457170110, guid: 50b22ccaac98e6c479eac2e36f6968d8, type: 3}
       propertyPath: m_TagString
-      value: Tool
+      value: Pickaxe
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -137,6 +137,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3480242447457170110, guid: 50b22ccaac98e6c479eac2e36f6968d8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7638929314165163071}
+    - targetCorrespondingSourceObject: {fileID: 3480242447457170110, guid: 50b22ccaac98e6c479eac2e36f6968d8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1706956686735599254}
   m_SourcePrefab: {fileID: 100100000, guid: 50b22ccaac98e6c479eac2e36f6968d8, type: 3}
 --- !u!1 &5065199800367631593 stripped
 GameObject:
@@ -158,6 +161,27 @@ MonoBehaviour:
   followDistance: 0.6
   followSpeed: 5
   rotationSpeed: 5
+--- !u!65 &1706956686735599254
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065199800367631593}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.3071227, y: 2.270866, z: 11.78781}
+  m_Center: {x: -0.1332675, y: 0.5768153, z: -0.06948661}
 --- !u!4 &7633678168128744602 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2303379731809473229, guid: 50b22ccaac98e6c479eac2e36f6968d8, type: 3}
