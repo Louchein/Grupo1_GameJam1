@@ -8,6 +8,10 @@ TagManager:
   - Dirt
   - Tool
   - Bomb
+  - Axe
+  - Hammer
+  - Hoe
+  - Pickaxe
   layers:
   - Default
   - TransparentFX

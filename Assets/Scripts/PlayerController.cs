@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,13 +11,30 @@ public class PlayerController : MonoBehaviour
     Vector3 movement;
     float movZ, movX;
     public float speed;
+    public int familyCount = 0;
+
+    // Variables para deteccion de colisiones.
     bool canInteract = false;
     private Collider currentCollider;
+
+    // Variables para acceder al TMPro
+    TextMeshProUGUI axeText;
+    TextMeshProUGUI hammerText;
+    TextMeshProUGUI hoeText;
+    TextMeshProUGUI pickaxeText;
+
+    public bool gameOver;
 
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+
+        axeText = GameObject.Find("AxeText").GetComponent<TextMeshProUGUI>();
+        hammerText = GameObject.Find("HammerText").GetComponent<TextMeshProUGUI>();
+        hoeText = GameObject.Find("HoeText").GetComponent<TextMeshProUGUI>();
+        pickaxeText = GameObject.Find("PickaxeText").GetComponent<TextMeshProUGUI>();
+
     }
 
     // Update is called once per frame
@@ -80,7 +98,37 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag("Bomb"))
         {
-            Debug.Log("GameOver");
+            familyCount = 0;
+            gameOver = true;
+
+        }
+
+        if(other.gameObject.CompareTag("Axe"))
+        {
+            familyCount++;
+            axeText.text = "Axe: Found";
+            axeText.color = Color.green;
+        }
+
+        if(other.gameObject.CompareTag("Hammer"))
+        {
+            familyCount++;
+            hammerText.text = "Hammer: Found";
+            hammerText.color = Color.green;
+        }
+
+        if(other.gameObject.CompareTag("Hoe"))
+        {
+            familyCount++;
+            hoeText.text = "Hoe: Found";
+            hoeText.color = Color.green;
+        }
+
+        if(other.gameObject.CompareTag("Pickaxe"))
+        {
+            familyCount++;
+            pickaxeText.text = "Pickaxe: Found";
+            pickaxeText.color = Color.green;
         }
     }
 
