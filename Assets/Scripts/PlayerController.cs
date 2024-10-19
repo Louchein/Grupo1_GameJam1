@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -18,21 +17,31 @@ public class PlayerController : MonoBehaviour
     bool canInteract = false;
     private Collider currentCollider;
 
-    // Variables para acceder a las imagenes
-    public GameObject inactiveAxe;
-    public GameObject activeAxe;
-    public GameObject inactiveHammer;
-    public GameObject activeHammer;
-    public GameObject inactiveHoe;
-    public GameObject activeHoe;
-    public GameObject inactivePickaxe;
-    public GameObject activePickaxe;
+    // Variables para acceder al TMPro
+    TextMeshProUGUI axeText;
+    TextMeshProUGUI hammerText;
+    TextMeshProUGUI hoeText;
+    TextMeshProUGUI pickaxeText;
+
+    // Audio
+    public AudioClip gameMusic;
+    public AudioClip notFoundAudio, foundAudio, bombAudio;
+
     public bool gameOver;
 
 
     void Start()
     {
+        // Reproducir musica de fondo
+        AudioManager.Instance.PlayMusic(gameMusic);
+
         controller = GetComponent<CharacterController>();
+
+        axeText = GameObject.Find("AxeText").GetComponent<TextMeshProUGUI>();
+        hammerText = GameObject.Find("HammerText").GetComponent<TextMeshProUGUI>();
+        hoeText = GameObject.Find("HoeText").GetComponent<TextMeshProUGUI>();
+        pickaxeText = GameObject.Find("PickaxeText").GetComponent<TextMeshProUGUI>();
+
     }
 
     // Update is called once per frame
@@ -77,7 +86,7 @@ public class PlayerController : MonoBehaviour
                     Destroy(childDirt.gameObject);
                     currentCollider.GetComponent<Collider>().enabled = false;
                 }
-                if(currentCollider.transform.GetChild(1) != null)
+                if (currentCollider.transform.GetChild(1) != null)
                 {
                     currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
                 }
@@ -92,42 +101,50 @@ public class PlayerController : MonoBehaviour
         {
             canInteract = true;
             currentCollider = other;
+            AudioManager.Instance.PlaySFX(notFoundAudio);
         }
 
         if (other.gameObject.CompareTag("Bomb"))
         {
             familyCount = 0;
             gameOver = true;
+            AudioManager.Instance.PlaySFX(bombAudio);
 
         }
 
-        if(other.gameObject.CompareTag("Axe"))
+        if (other.gameObject.CompareTag("Axe"))
         {
             familyCount++;
-            inactiveAxe.SetActive(false);
-            activeAxe.SetActive(true);
-        }
-
-        if(other.gameObject.CompareTag("Hammer"))
-        {
-            familyCount++;
-            inactiveHammer.SetActive(false);
-            activeHammer.SetActive(true);
+            axeText.text = "Axe: Found";
+            axeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
 
         }
 
-        if(other.gameObject.CompareTag("Hoe"))
+        if (other.gameObject.CompareTag("Hammer"))
         {
             familyCount++;
-            inactiveHoe.SetActive(false);
-            activeHoe.SetActive(true);
+            hammerText.text = "Hammer: Found";
+            hammerText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
         }
 
-        if(other.gameObject.CompareTag("Pickaxe"))
+        if (other.gameObject.CompareTag("Hoe"))
         {
             familyCount++;
-            inactivePickaxe.SetActive(false);
-            activePickaxe.SetActive(true);
+            hoeText.text = "Hoe: Found";
+            hoeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
+
+        }
+
+        if (other.gameObject.CompareTag("Pickaxe"))
+        {
+            familyCount++;
+            pickaxeText.text = "Pickaxe: Found";
+            pickaxeText.color = Color.green;
+            AudioManager.Instance.PlaySFX(foundAudio);
 
         }
     }
