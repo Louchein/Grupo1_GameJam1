@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public ParticleSystem moveParticle; //  Particulas cuando el player se mueve
+    public ParticleSystem explosionParticle;
+    
     CharacterController controller;
 
     // Coordenadas de movimiento
@@ -15,6 +18,10 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+
+        // Asegúrate de que el sistema de partículas no siga al player
+        var mainModule = moveParticle.main;
+        mainModule.simulationSpace = ParticleSystemSimulationSpace.World; // Partículas en el espacio del mundo
     }
 
     // Update is called once per frame
@@ -43,6 +50,22 @@ public class PlayerController : MonoBehaviour
 
         // Mover el personaje
         controller.Move(move * Time.deltaTime);
+
+        // Si el player está en movimiento, se activan las partículas
+        if (movX != 0 || movZ != 0)
+        {
+            if (!moveParticle.isPlaying) // Verifica si las partículas ya no están reproduciéndose
+            {
+                moveParticle.Play(); // Reproduce las partículas
+            }
+        }
+        else
+        {
+            if (moveParticle.isPlaying) // Verifica si las partículas están reproduciéndose
+            {
+                moveParticle.Stop(); // Detiene las partículas
+            }
+        }
     }
 
     //Dectector de colisionadores de la tierra.
@@ -65,6 +88,8 @@ public class PlayerController : MonoBehaviour
         if(other.gameObject.CompareTag("Bomb"))
             {
                 Debug.Log("GameOver");
+
+                explosionParticle.Play();
             }
     }
 }
