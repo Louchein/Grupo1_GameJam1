@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using System.Transactions;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,12 +13,23 @@ public class PlayerController : MonoBehaviour
     Vector3 movement;
     float movZ, movX;
     public float speed;
+    public float positiveLimit = 32.0f;
+    public float negativeLimit = -30.0f;
     public int familyCount = 0;
 
     // Variables para deteccion de colisiones.
     bool canInteract = false;
     private Collider currentCollider;
 
+    // Variables para acceder a las imagenes
+    public GameObject inactiveAxe;
+    public GameObject activeAxe;
+    public GameObject inactiveHammer;
+    public GameObject activeHammer;
+    public GameObject inactiveHoe;
+    public GameObject activeHoe;
+    public GameObject inactivePickaxe;
+    public GameObject activePickaxe;
     // Variables para acceder al TMPro
     TextMeshProUGUI axeText;
     TextMeshProUGUI hammerText;
@@ -36,12 +49,6 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.PlayMusic(gameMusic);
 
         controller = GetComponent<CharacterController>();
-
-        axeText = GameObject.Find("AxeText").GetComponent<TextMeshProUGUI>();
-        hammerText = GameObject.Find("HammerText").GetComponent<TextMeshProUGUI>();
-        hoeText = GameObject.Find("HoeText").GetComponent<TextMeshProUGUI>();
-        pickaxeText = GameObject.Find("PickaxeText").GetComponent<TextMeshProUGUI>();
-
     }
 
     // Update is called once per frame
@@ -71,6 +78,23 @@ public class PlayerController : MonoBehaviour
 
         // Mover el personaje
         controller.Move(move * Time.deltaTime);
+
+        if(transform.position.x < negativeLimit) 
+        {
+            transform.position = new Vector3(negativeLimit, transform.position.y, transform.position.z);
+        }
+        if(transform.position.x > positiveLimit)
+        {
+            transform.position = new Vector3(positiveLimit, transform.position.y, transform.position.z);
+        }
+        if(transform.position.z > positiveLimit)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, positiveLimit);
+        }
+        if(transform.position.z < negativeLimit)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, negativeLimit);
+        }
     }
 
     void Dig()
@@ -115,8 +139,8 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Axe"))
         {
             familyCount++;
-            axeText.text = "Axe: Found";
-            axeText.color = Color.green;
+            inactiveAxe.SetActive(false);
+            activeAxe.SetActive(true);
             AudioManager.Instance.PlaySFX(foundAudio);
 
         }
@@ -124,8 +148,8 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Hammer"))
         {
             familyCount++;
-            hammerText.text = "Hammer: Found";
-            hammerText.color = Color.green;
+            inactiveHammer.SetActive(false);
+            activeHammer.SetActive(true);
             AudioManager.Instance.PlaySFX(foundAudio);
 
         }
@@ -133,8 +157,8 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Hoe"))
         {
             familyCount++;
-            hoeText.text = "Hoe: Found";
-            hoeText.color = Color.green;
+            inactiveHoe.SetActive(false);
+            activeHoe.SetActive(true);
             AudioManager.Instance.PlaySFX(foundAudio);
 
         }
@@ -142,8 +166,8 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Pickaxe"))
         {
             familyCount++;
-            pickaxeText.text = "Pickaxe: Found";
-            pickaxeText.color = Color.green;
+            inactivePickaxe.SetActive(false);
+            activePickaxe.SetActive(true);
             AudioManager.Instance.PlaySFX(foundAudio);
 
         }
