@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
         familyFoundPanel.SetActive(false);
         gameCompletedPanel.SetActive(true);
         Time.timeScale = 0;
+        AudioManager.Instance.StopMusic();
     }
 
     public void GoHome()
