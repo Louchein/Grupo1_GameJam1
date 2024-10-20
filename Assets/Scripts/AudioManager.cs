@@ -32,4 +32,9 @@ public class AudioManager : MonoBehaviour
         musicSource.Play();
         musicSource.loop = true;
     }
+
+    public void StopMusic()
+    {
+        musicSource.Stop();
+    }
 }

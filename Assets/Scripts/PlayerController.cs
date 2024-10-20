@@ -7,7 +7,7 @@ using System.Transactions;
 
 public class PlayerController : MonoBehaviour
 {
-    public ParticleSystem moveParticle; // Partículas cuando el player se mueve
+    public ParticleSystem moveParticle; // Partï¿½culas cuando el player se mueve
     public ParticleSystem explosionParticle; // Particulas cuando el player encuentra "Bomb"
     public ParticleSystem foundParticle; // Particulas cuando encuentra la familia
 
@@ -54,9 +54,9 @@ public class PlayerController : MonoBehaviour
 
         controller = GetComponent<CharacterController>();
 
-        // Asegúrate de que el sistema de partículas no siga al player
+        // Asegï¿½rate de que el sistema de partï¿½culas no siga al player
         var mainModule = moveParticle.main;
-        mainModule.simulationSpace = ParticleSystemSimulationSpace.World; // Partículas en el espacio del mundo
+        mainModule.simulationSpace = ParticleSystemSimulationSpace.World; // Partï¿½culas en el espacio del mundo
     }
 
     // Update is called once per frame
@@ -87,36 +87,40 @@ public class PlayerController : MonoBehaviour
         // Mover el personaje
         controller.Move(move * Time.deltaTime);
 
-        if(transform.position.x < negativeLimit) 
+        if (transform.position.x < negativeLimit)
         {
             transform.position = new Vector3(negativeLimit, transform.position.y, transform.position.z);
         }
-        if(transform.position.x > positiveLimit)
+        if (transform.position.x > positiveLimit)
         {
             transform.position = new Vector3(positiveLimit, transform.position.y, transform.position.z);
         }
-        if(transform.position.z > positiveLimit)
+        if (transform.position.z > positiveLimit)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, positiveLimit);
         }
-        if(transform.position.z < negativeLimit)
+        if (transform.position.z < negativeLimit)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, negativeLimit);
         }
+        //if (transform.position.y > 0)
+        //{
+        //    transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+        //}
 
-        // Si el player está en movimiento, se activan las partículas
+        // Si el player estï¿½ en movimiento, se activan las partï¿½culas
         if (movX != 0 || movZ != 0)
         {
-            if (!moveParticle.isPlaying) // Verifica si las partículas no están ya reproduciéndose
+            if (!moveParticle.isPlaying) // Verifica si las partï¿½culas no estï¿½n ya reproduciï¿½ndose
             {
-                moveParticle.Play(); // Reproduce las partículas
+                moveParticle.Play(); // Reproduce las partï¿½culas
             }
         }
         else
         {
-            if (moveParticle.isPlaying) // Verifica si las partículas están reproduciéndose
+            if (moveParticle.isPlaying) // Verifica si las partï¿½culas estï¿½n reproduciï¿½ndose
             {
-                moveParticle.Stop(); // Detiene las partículas
+                moveParticle.Stop(); // Detiene las partï¿½culas
             }
         }
     }
@@ -155,7 +159,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Bomb"))
         {
             familyCount = 0;
-            StartCoroutine("StartGameOver"); 
+            StartCoroutine("StartGameOver");
             AudioManager.Instance.PlaySFX(bombAudio);
             explosionParticle.Play();
         }
@@ -210,9 +214,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator StartGameOver() 
+    IEnumerator StartGameOver()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.75f);
         gameOver = true;
     }
 }

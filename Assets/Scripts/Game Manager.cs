@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
     public GameObject gameCompletedPanel;
     // Start is called before the first frame update
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         Time.timeScale = 1;
     }
     void Start()
@@ -24,34 +25,35 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(playerControlerScript.gameOver)
+        if (playerControlerScript.gameOver)
         {
             ShowGameOver();
         }
 
-        if(playerControlerScript.familyCount == 4)
+        if (playerControlerScript.familyCount == 4)
         {
             ShowGameCompleted();
         }
     }
 
-    IEnumerator SpawnPileOfDirt() {
-        for (int i = 0; i < 10; i++) 
+    IEnumerator SpawnPileOfDirt()
+    {
+        for (int i = 0; i < 10; i++)
         {
-            if(i==0 || i==1 || i==2 || i==3 || i==4)
+            if (i == 0 || i == 1 || i == 2 || i == 3 || i == 4)
             {
                 Vector3 spawnPosition = new Vector3(Random.Range(-20.0f, 14.0f), -0.6f, Random.Range(-25.0f, 18.0f));
                 Instantiate(pilesOfDirt[i], spawnPosition, Quaternion.identity);
-                pilesAmount ++;
+                pilesAmount++;
                 yield return new WaitForSeconds(0.1f);
-            } 
-            else 
+            }
+            else
             {
                 Vector3 spawnPosition = new Vector3(Random.Range(-20.0f, 14.0f), -0.6f, Random.Range(-25.0f, 18.0f));
                 Instantiate(pilesOfDirt[5], spawnPosition, Quaternion.identity);
-                pilesAmount ++;
+                pilesAmount++;
                 yield return new WaitForSeconds(0.1f);
-            }   
+            }
         }
     }
 
@@ -61,6 +63,7 @@ public class GameManager : MonoBehaviour
         familyFoundPanel.SetActive(false);
         gameOverPanel.SetActive(true);
         Time.timeScale = 0;
+        AudioManager.Instance.StopMusic();
     }
 
     public void RestartGame()
@@ -80,5 +83,5 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
-    
+
 }
