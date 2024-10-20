@@ -7,6 +7,10 @@ using System.Transactions;
 
 public class PlayerController : MonoBehaviour
 {
+    public ParticleSystem moveParticle; // Partículas cuando el player se mueve
+    public ParticleSystem explosionParticle; // Particulas cuando el player encuentra "Bomb"
+    public ParticleSystem foundParticle; // Particulas cuando encuentra la familia
+
     CharacterController controller;
 
     // Coordenadas de movimiento
@@ -49,6 +53,10 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.PlayMusic(gameMusic);
 
         controller = GetComponent<CharacterController>();
+
+        // Asegúrate de que el sistema de partículas no siga al player
+        var mainModule = moveParticle.main;
+        mainModule.simulationSpace = ParticleSystemSimulationSpace.World; // Partículas en el espacio del mundo
     }
 
     // Update is called once per frame
@@ -95,6 +103,22 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, negativeLimit);
         }
+
+        // Si el player está en movimiento, se activan las partículas
+        if (movX != 0 || movZ != 0)
+        {
+            if (!moveParticle.isPlaying) // Verifica si las partículas no están ya reproduciéndose
+            {
+                moveParticle.Play(); // Reproduce las partículas
+            }
+        }
+        else
+        {
+            if (moveParticle.isPlaying) // Verifica si las partículas están reproduciéndose
+            {
+                moveParticle.Stop(); // Detiene las partículas
+            }
+        }
     }
 
     void Dig()
@@ -131,9 +155,9 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Bomb"))
         {
             familyCount = 0;
-            gameOver = true;
+            StartCoroutine("StartGameOver"); 
             AudioManager.Instance.PlaySFX(bombAudio);
-
+            explosionParticle.Play();
         }
 
         if (other.gameObject.CompareTag("Axe"))
@@ -142,6 +166,7 @@ public class PlayerController : MonoBehaviour
             inactiveAxe.SetActive(false);
             activeAxe.SetActive(true);
             AudioManager.Instance.PlaySFX(foundAudio);
+            foundParticle.Play();
 
         }
 
@@ -151,6 +176,7 @@ public class PlayerController : MonoBehaviour
             inactiveHammer.SetActive(false);
             activeHammer.SetActive(true);
             AudioManager.Instance.PlaySFX(foundAudio);
+            foundParticle.Play();
 
         }
 
@@ -160,6 +186,7 @@ public class PlayerController : MonoBehaviour
             inactiveHoe.SetActive(false);
             activeHoe.SetActive(true);
             AudioManager.Instance.PlaySFX(foundAudio);
+            foundParticle.Play();
 
         }
 
@@ -169,6 +196,7 @@ public class PlayerController : MonoBehaviour
             inactivePickaxe.SetActive(false);
             activePickaxe.SetActive(true);
             AudioManager.Instance.PlaySFX(foundAudio);
+            foundParticle.Play();
 
         }
     }
@@ -180,5 +208,11 @@ public class PlayerController : MonoBehaviour
             canInteract = false;
             currentCollider = null;
         }
+    }
+
+    IEnumerator StartGameOver() 
+    {
+        yield return new WaitForSeconds(1.0f);
+        gameOver = true;
     }
 }
