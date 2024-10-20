@@ -13,9 +13,11 @@ public class PlayerController : MonoBehaviour
     bool canInteract = false;
     private Collider currentCollider;
 
-    public Animator playerAnimator;
+    [HideInInspector] public Animator playerAnimator;
     private const string IS_WALKING = "IsWalking";
     private const string IS_SHOVELING = "IsShoveling";
+
+    public ParticleSystem dirtAway;
 
     void Start()
     {
@@ -68,16 +70,22 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetBool(IS_SHOVELING, true);
 
             StartCoroutine(CheckIfDirtPile());
+
+            GameObject pileOfDirt = currentCollider.gameObject;
+            if (pileOfDirt.CompareTag("Dirt") && pileOfDirt.transform.childCount == 2) {
+                dirtAway.gameObject.SetActive(true);
+
+                StartCoroutine(StartDirtParticlesAnimation());
+            }
         }
     }
 
     IEnumerator CheckIfDirtPile() {
         yield return new WaitForSeconds(.7f);
 
-        GameObject pileOfDirt = currentCollider.gameObject;
-
-        if (pileOfDirt.CompareTag("Dirt") && pileOfDirt.transform.childCount == 2) {
+        if (currentCollider.transform.childCount > 1 ) { 
             Transform childDirt = currentCollider.transform.Find("PileOfDirt");
+        
             if (childDirt != null) {
                 Destroy(childDirt.gameObject);
                 currentCollider.GetComponent<Collider>().enabled = false;
@@ -86,12 +94,19 @@ public class PlayerController : MonoBehaviour
                 currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
             }
         }
+        
 
         playerAnimator.SetBool(IS_SHOVELING, false);
     }
 
-    //Dectector de colisionadores de la tierra.
-    private void OnTriggerEnter(Collider other)
+    IEnumerator StartDirtParticlesAnimation() {
+        yield return new WaitForSeconds(1.7f);
+
+        dirtAway.gameObject.SetActive(false);
+    }
+
+        //Dectector de colisionadores de la tierra.
+        private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Dirt"))
         {

@@ -1593,7 +1593,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &920887460
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -1691,7 +1691,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1
+    scalar: 0.8
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -6399,13 +6399,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920887459}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.13776442, y: -0.59951293, z: -0.10571035, w: 0.7813006}
   m_LocalPosition: {x: -0.727, y: 0.826, z: -0.895}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 960989521}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -20, y: -75, z: 0}
 --- !u!1001 &952786074
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6519,6 +6519,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   playerAnimator: {fileID: 0}
+  dirtAway: {fileID: 920887461}
 --- !u!143 &960989524
 CharacterController:
   m_ObjectHideFlags: 0
