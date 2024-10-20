@@ -19,13 +19,16 @@ public class PlayerController : MonoBehaviour
 
     public ParticleSystem dirtAway;
 
+    // Nueva variable para la velocidad vertical (gravedad)
+    private float velocityY;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        
         playerAnimator = GetComponent<Animator>();
-
         speed = 10;
+
+        velocityY = 0f; // Inicialmente la velocidad vertical es 0
     }
 
     // Update is called once per frame
@@ -57,7 +60,17 @@ public class PlayerController : MonoBehaviour
         move = move.normalized * speed; // Normaliza el vector y aplica la velocidad
 
         // Se aplica gravedad
-        move.y += Physics.gravity.y * Time.deltaTime;
+        // Check if player is grounded
+        if (controller.isGrounded) {
+            // Si está en el suelo, la velocidad en Y es 0
+            velocityY = 0;
+        } else {
+            // Si no está en el suelo, aplicar la gravedad
+            velocityY += Physics.gravity.y * Time.deltaTime;
+        }
+
+        // Aplicar la velocidad en Y (gravedad)
+        move.y = velocityY * 0.1f;
 
         // Mover el personaje
         controller.Move(move * Time.deltaTime);
@@ -83,7 +96,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator CheckIfDirtPile() {
         yield return new WaitForSeconds(.7f);
 
-        if (currentCollider.transform.childCount > 1 ) { 
+        if (currentCollider.transform.childCount == 2 ) { 
             Transform childDirt = currentCollider.transform.Find("PileOfDirt");
         
             if (childDirt != null) {
