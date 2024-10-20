@@ -13,10 +13,17 @@ public class PlayerController : MonoBehaviour
     bool canInteract = false;
     private Collider currentCollider;
 
+    public Animator playerAnimator;
+    private const string IS_WALKING = "IsWalking";
+    private const string IS_SHOVELING = "IsShoveling";
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        
+        playerAnimator = GetComponent<Animator>();
+
+        speed = 10;
     }
 
     // Update is called once per frame
@@ -37,8 +44,14 @@ public class PlayerController : MonoBehaviour
 
     void MovePlayer()
     {
+        if (movX > 0 || movZ > 0) {
+            playerAnimator.SetBool(IS_WALKING, true);
+        } else {
+            playerAnimator.SetBool(IS_WALKING, false);
+        }
+
         // Combina los vectores de movimiento vertical y horizontal
-        Vector3 move = transform.forward * movZ + transform.right * movX;
+        Vector3 move = transform.forward * -movZ + transform.right * -movX;
         move = move.normalized * speed; // Normaliza el vector y aplica la velocidad
 
         // Se aplica gravedad
@@ -52,21 +65,29 @@ public class PlayerController : MonoBehaviour
     {
         if (canInteract && Input.GetKeyDown(KeyCode.Space))
         {
-            GameObject pileOfDirt = currentCollider.gameObject;
-            if (pileOfDirt.CompareTag("Dirt") && pileOfDirt.transform.childCount == 2)
-            {
-                Transform childDirt = currentCollider.transform.Find("PileOfDirt");
-                if (childDirt != null)
-                {
-                    Destroy(childDirt.gameObject);
-                    currentCollider.GetComponent<Collider>().enabled = false;
-                }
-                if(currentCollider.transform.GetChild(1) != null)
-                {
-                    currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
-                }
+            playerAnimator.SetBool(IS_SHOVELING, true);
+
+            StartCoroutine(CheckIfDirtPile());
+        }
+    }
+
+    IEnumerator CheckIfDirtPile() {
+        yield return new WaitForSeconds(.7f);
+
+        GameObject pileOfDirt = currentCollider.gameObject;
+
+        if (pileOfDirt.CompareTag("Dirt") && pileOfDirt.transform.childCount == 2) {
+            Transform childDirt = currentCollider.transform.Find("PileOfDirt");
+            if (childDirt != null) {
+                Destroy(childDirt.gameObject);
+                currentCollider.GetComponent<Collider>().enabled = false;
+            }
+            if (currentCollider.transform.GetChild(1) != null) {
+                currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
             }
         }
+
+        playerAnimator.SetBool(IS_SHOVELING, false);
     }
 
     //Dectector de colisionadores de la tierra.

@@ -33,10 +33,12 @@ public class CameraLook : MonoBehaviour
 
     void RotateCam()
     {
+        //xRotation -= mouseY;
         xRotation -= mouseY;
 
         xRotation = Mathf.Clamp(xRotation, -anguloCam, anguloCam);
-        transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        //transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        transform.localRotation = Quaternion.Euler(xRotation, 180, 0);
         player.Rotate(Vector3.up * mouseX);
     }
 }
