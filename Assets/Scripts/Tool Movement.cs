@@ -20,7 +20,7 @@ public class ToolMovement : MonoBehaviour
     {
         if (player.GetComponent<Rigidbody>().velocity.magnitude > 0) {
             // Calcula la posición objetivo manteniendo la distancia
-            targetPosition = player.position - player.forward * followDistance;
+            targetPosition = player.position + player.forward * followDistance;
 
             // Mueve el GameObject hacia la posición objetivo
             transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);

@@ -46,6 +46,16 @@ public class PlayerController : MonoBehaviour
 
     public bool gameOver;
 
+    // Animator
+    [HideInInspector] public Animator playerAnimator;
+    private const string IS_WALKING = "IsWalking";
+    private const string IS_SHOVELING = "IsShoveling";
+
+    // Partículas
+    public ParticleSystem dirtAway;
+
+    // Nueva variable para la velocidad vertical (gravedad)
+    private float velocityY;
 
     void Start()
     {
@@ -53,6 +63,11 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.PlayMusic(gameMusic);
 
         controller = GetComponent<CharacterController>();
+
+        playerAnimator = GetComponent<Animator>();
+        speed = 10;
+
+        velocityY = 0f; // Inicialmente la velocidad vertical es 0
 
         // Aseg�rate de que el sistema de part�culas no siga al player
         var mainModule = moveParticle.main;
@@ -78,11 +93,24 @@ public class PlayerController : MonoBehaviour
     void MovePlayer()
     {
         // Combina los vectores de movimiento vertical y horizontal
-        Vector3 move = transform.forward * movZ + transform.right * movX;
+        Vector3 move = transform.forward * -movZ + transform.right * -movX;
         move = move.normalized * speed; // Normaliza el vector y aplica la velocidad
 
         // Se aplica gravedad
-        move.y += Physics.gravity.y * Time.deltaTime;
+        //move.y += Physics.gravity.y * Time.deltaTime;
+
+        // Se aplica gravedad
+        // Check if player is grounded
+        if (controller.isGrounded) {
+            // Si est� en el suelo, la velocidad en Y es 0
+            velocityY = 0;
+        } else {
+            // Si no est� en el suelo, aplicar la gravedad
+            velocityY += Physics.gravity.y * Time.deltaTime;
+        }
+
+        // Aplicar la velocidad en Y (gravedad)
+        move.y = velocityY * 0.1f;
 
         // Mover el personaje
         controller.Move(move * Time.deltaTime);
@@ -114,6 +142,7 @@ public class PlayerController : MonoBehaviour
             if (!moveParticle.isPlaying) // Verifica si las part�culas no est�n ya reproduci�ndose
             {
                 moveParticle.Play(); // Reproduce las part�culas
+                playerAnimator.SetBool(IS_WALKING, true);
             }
         }
         else
@@ -121,6 +150,7 @@ public class PlayerController : MonoBehaviour
             if (moveParticle.isPlaying) // Verifica si las part�culas est�n reproduci�ndose
             {
                 moveParticle.Stop(); // Detiene las part�culas
+                playerAnimator.SetBool(IS_WALKING, false);
             }
         }
     }
@@ -129,22 +159,45 @@ public class PlayerController : MonoBehaviour
     {
         if (canInteract && Input.GetKeyDown(KeyCode.Space))
         {
+            playerAnimator.SetBool(IS_SHOVELING, true);
+
+            StartCoroutine(CheckIfDirtPile());
+
             GameObject pileOfDirt = currentCollider.gameObject;
             if (pileOfDirt.CompareTag("Dirt") && pileOfDirt.transform.childCount == 2)
             {
-                Transform childDirt = currentCollider.transform.Find("PileOfDirt");
-                if (childDirt != null)
-                {
-                    Destroy(childDirt.gameObject);
-                    currentCollider.GetComponent<Collider>().enabled = false;
-                }
-                if (currentCollider.transform.GetChild(1) != null)
-                {
-                    currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
-                }
+                //dirtAway.gameObject.SetActive(true);
+
+                StartCoroutine(StartDirtParticlesAnimation());
             }
         }
     }
+
+    IEnumerator CheckIfDirtPile() {
+        yield return new WaitForSeconds(.7f);
+
+        if (currentCollider.transform.childCount == 2) {
+            Transform childDirt = currentCollider.transform.Find("PileOfDirt");
+
+            if (childDirt != null) {
+                Destroy(childDirt.gameObject);
+                currentCollider.GetComponent<Collider>().enabled = false;
+            }
+            if (currentCollider.transform.GetChild(1) != null) {
+                currentCollider.transform.GetChild(1).gameObject.SetActive(true); //Activa el familiar
+            }
+        }
+
+        playerAnimator.SetBool(IS_SHOVELING, false);
+    }
+
+    IEnumerator StartDirtParticlesAnimation() {
+        yield return new WaitForSeconds(1.6f);
+
+        //dirtAway.gameObject.SetActive(false);
+    }
+
+
 
     //Dectector de colisionadores de la tierra.
     private void OnTriggerEnter(Collider other)
